@@ -2,8 +2,6 @@
 import re
 import string
 import random
-import itertools
-from tqdm import tqdm
 
 MORSE_CODE = {
     'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',
