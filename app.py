@@ -6,26 +6,42 @@ app = Flask(__name__)
 @app.route('/', methods=['GET', 'POST'])
 def index():
     result = {}
-    if request.method == 'POST':
-        plaintext = request.form.get('plaintext')
-        key = request.form.get('key')
 
-        if not plaintext or not key or len(key) != 10:
-            result['error'] = "Please enter a plaintext and a 10-character key (only '.', '-', 'x')."
-        else:
+    if request.method == 'POST':
+        plaintext = request.form.get('plaintext', '').strip()
+        ciphertext = request.form.get('ciphertext', '').strip()
+        key = request.form.get('key', '').strip()
+
+        if not key or len(key) != 10 or not all(c in '.-x' for c in key):
+            result['error'] = "Key must be exactly 10 characters long and consist of only '.', '-', and 'x'."
+        elif plaintext:
             try:
                 encrypted, morse_text, key_map = pollux_encrypt(plaintext, key)
                 decrypted = pollux_decrypt(encrypted, key)
-                result = {
+                result.update({
+                    'mode': 'Encrypt',
                     'plaintext': plaintext,
                     'key': key,
                     'morse_text': morse_text,
                     'key_map': key_map,
                     'encrypted': encrypted,
                     'decrypted': decrypted
-                }
+                })
             except Exception as e:
-                result['error'] = f"Error: {e}"
+                result['error'] = f"Encryption error: {e}"
+        elif ciphertext:
+            try:
+                decrypted = pollux_decrypt(ciphertext, key)
+                result.update({
+                    'mode': 'Decrypt',
+                    'ciphertext': ciphertext,
+                    'key': key,
+                    'decrypted': decrypted
+                })
+            except Exception as e:
+                result['error'] = f"Decryption error: {e}"
+        else:
+            result['error'] = "Please provide either plaintext or ciphertext."
 
     return render_template('index.html', result=result)
 

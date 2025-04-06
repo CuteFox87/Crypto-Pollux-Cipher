@@ -4,49 +4,109 @@
     <meta charset="UTF-8">
     <title>Pollux Cipher Tool</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 2rem; background-color: #f2f2f2; }
-        .container { background: white; padding: 2rem; border-radius: 10px; max-width: 600px; margin: auto; }
-        input[type=text], textarea {
-            width: 100%; padding: 0.5rem; margin: 0.5rem 0; border-radius: 5px; border: 1px solid #ccc;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 2rem;
         }
+
+        .container {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .input-half {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 0.5rem;
+            margin-top: 0.3rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
         button {
-            padding: 0.5rem 1rem; background-color: #4CAF50; color: white;
-            border: none; border-radius: 5px; cursor: pointer;
+            margin-top: 1rem;
+            padding: 0.7rem 1.5rem;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
-        .result { margin-top: 2rem; }
-        pre { background-color: #eee; padding: 1rem; border-radius: 5px; }
+
+        .result {
+            margin-top: 2rem;
+        }
+
+        pre {
+            background: #eee;
+            padding: 1rem;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🔐 Pollux Cipher Tool</h1>
         <form method="post">
-            <label>Plaintext:</label>
-            <textarea name="plaintext" rows="3" required>{{ result.plaintext if result else '' }}</textarea>
+            <div class="input-group">
+                <div class="input-half">
+                    <label for="plaintext">Plaintext (for encryption):</label>
+                    <textarea name="plaintext" rows="5">{{ result.plaintext if result else '' }}</textarea>
+                </div>
 
-            <label>Key (10 chars, only . - x):</label>
-            <input type="text" name="key" value="{{ result.key if result else '' }}" maxlength="10" required>
+                <div class="input-half">
+                    <label for="ciphertext">Ciphertext (for decryption):</label>
+                    <textarea name="ciphertext" rows="5">{{ result.ciphertext if result else '' }}</textarea>
+                </div>
+            </div>
 
-            <button type="submit">Encrypt & Decrypt</button>
+            <label for="key">Key (10 characters, use only '.', '-', 'x'):</label>
+            <input type="text" name="key" maxlength="10" value="{{ result.key if result else '' }}" required>
+
+            <button type="submit">Submit</button>
         </form>
 
         {% if result %}
         <div class="result">
             {% if result.error %}
-                <p style="color: red;">{{ result.error }}</p>
+                <p style="color: red;"><strong>{{ result.error }}</strong></p>
             {% else %}
-            <h2>Result:</h2>
-            <p><strong>Morse Text:</strong></p>
-            <pre>{{ result.morse_text }}</pre>
+                <h2>Mode: {{ result.mode }}</h2>
 
-            <p><strong>Key Map:</strong></p>
-            <pre>{{ result.key_map }}</pre>
+                {% if result.mode == 'Encrypt' %}
+                    <p><strong>Morse Text:</strong></p>
+                    <pre>{{ result.morse_text }}</pre>
 
-            <p><strong>Encrypted:</strong></p>
-            <pre>{{ result.encrypted }}</pre>
+                    <p><strong>Key Map:</strong></p>
+                    <pre>{{ result.key_map }}</pre>
 
-            <p><strong>Decrypted:</strong></p>
-            <pre>{{ result.decrypted }}</pre>
+                    <p><strong>Encrypted:</strong></p>
+                    <pre>{{ result.encrypted }}</pre>
+
+                    <p><strong>Decrypted (Verify):</strong></p>
+                    <pre>{{ result.decrypted }}</pre>
+                {% else %}
+                    <p><strong>Decrypted:</strong></p>
+                    <pre>{{ result.decrypted }}</pre>
+                {% endif %}
             {% endif %}
         </div>
         {% endif %}
