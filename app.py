@@ -16,14 +16,14 @@ def index():
             result['error'] = "Key must be exactly 10 characters long and consist of only '.', '-', and 'x'."
         elif plaintext:
             try:
-                encrypted, morse_text, key_map = pollux_encrypt(plaintext, key)
+                encrypted, process, key_map = pollux_encrypt(plaintext, key)
                 decrypted = pollux_decrypt(encrypted, key)
                 result.update({
                     'mode': 'Encrypt',
                     'plaintext': plaintext,
                     'key': key,
-                    'morse_text': morse_text,
                     'key_map': key_map,
+                    'process': process,
                     'encrypted': encrypted,
                     'decrypted': decrypted
                 })

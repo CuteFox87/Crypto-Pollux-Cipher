@@ -92,11 +92,12 @@
                 <h2>Mode: {{ result.mode }}</h2>
 
                 {% if result.mode == 'Encrypt' %}
-                    <p><strong>Morse Text:</strong></p>
-                    <pre>{{ result.morse_text }}</pre>
 
                     <p><strong>Key Map:</strong></p>
                     <pre>{{ result.key_map }}</pre>
+
+                    <p><strong>Process:</strong></p>
+                    <pre>{{ result.process }}</pre>
 
                     <p><strong>Encrypted:</strong></p>
                     <pre>{{ result.encrypted }}</pre>

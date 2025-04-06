@@ -46,7 +46,6 @@ def morse2text(morse_text):
                     current_word += letter
                     break
 
-    # Append any last word
     if current_word:
         decoded_text += current_word
 
@@ -72,8 +71,20 @@ def pollux_encrypt(plaintext, key, method='rand'):
             indices = key_map[char]
             index = random.choice(indices)
             encrypted_text.append(index)
+
+    plaintext = plaintext.upper()
+    plaintext = plaintext.translate(str.maketrans('', '', string.punctuation))
+    process = ""
+    for i in range(len(plaintext)):
+        if plaintext[i] != ' ':
+            process += plaintext[i]
+            process += len(MORSE_CODE[plaintext[i]]) * ' '
+        else:
+            process += ' '
+    process += '\n' + morse_text + '\n'
+    process += ''.join(encrypted_text) + '\n'
     
-    return ''.join(encrypted_text), morse_text, key_map
+    return ''.join(encrypted_text), process, key_map
 
 def pollux_decrypt(ciphertext, key):
     if not isinstance(ciphertext, str) or not isinstance(key, str):
@@ -95,8 +106,9 @@ if __name__ == "__main__":
     print("Plaintext:", plaintext)
     print("Key:", key)
 
-    encrypt = pollux_encrypt(plaintext, key)
+    encrypt, process, key_map = pollux_encrypt(plaintext, key)
     print("Encrypted:", encrypt)
+    print(process)
 
     decrypt = pollux_decrypt(encrypt, key)
     print("Decrypted:", decrypt)
