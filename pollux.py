@@ -89,14 +89,31 @@ def pollux_decrypt(ciphertext, key):
         raise TypeError("Ciphertext and key must be strings")
     
     key_map = parse_key(key)
-    decrypted_text = []
+    decrypted_symbols = []
     for char in ciphertext:
         for symbol, indices in key_map.items():
             if char in indices:
-                decrypted_text.append(symbol)
+                decrypted_symbols.append(symbol)
                 break
-    morse_code =  ''.join(decrypted_text)
-    return morse2text(morse_code)
+
+    morse_code = ''.join(decrypted_symbols)
+    text = morse2text(morse_code)
+
+    process = ""
+
+    for i in range(len(text)):
+        if text[i] != ' ':
+            process += text[i]
+            process += len(MORSE_CODE[text[i]]) * ' '
+        else:
+            process += ' '
+
+
+    process = ciphertext + '\n' + morse_code + '\n' + process
+        
+
+    return text, process, key_map
+
 
 if __name__ == "__main__":
     plaintext = "When one teaches, two learn."
@@ -108,7 +125,8 @@ if __name__ == "__main__":
     print("Encrypted:", encrypt)
     print(process)
 
-    decrypt = pollux_decrypt(encrypt, key)
+    decrypt, process, key_map = pollux_decrypt(encrypt, key)
     print("Decrypted:", decrypt)
+    print(process)
 
     

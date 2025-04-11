@@ -17,7 +17,7 @@ def index():
         elif plaintext:
             try:
                 encrypted, process, key_map = pollux_encrypt(plaintext, key)
-                decrypted = pollux_decrypt(encrypted, key)
+                decrypted, process2, key_map = pollux_decrypt(encrypted, key)
                 result.update({
                     'mode': 'Encrypt',
                     'plaintext': plaintext,
@@ -31,12 +31,14 @@ def index():
                 result['error'] = f"Encryption error: {e}"
         elif ciphertext:
             try:
-                decrypted = pollux_decrypt(ciphertext, key)
+                decrypted, process2, key_map = pollux_decrypt(ciphertext, key)
                 result.update({
                     'mode': 'Decrypt',
                     'ciphertext': ciphertext,
                     'key': key,
-                    'decrypted': decrypted
+                    'key_map': key_map,
+                    'process': process2,
+                    'decrypted': decrypted,
                 })
             except Exception as e:
                 result['error'] = f"Decryption error: {e}"
